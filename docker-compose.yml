@@ -1,0 +1,137 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: its_gestionale_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - its_network
+    depends_on:
+      - db
+      - redis
+
+  webserver:
+    image: nginx:alpine
+    container_name: its_gestionale_webserver
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - its_network
+    depends_on:
+      - app
+
+  db:
+    image: mysql:8.0
+    container_name: its_gestionale_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: its_gestionale
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: its_user
+      MYSQL_PASSWORD: its_password
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+    ports:
+      - "3306:3306"
+    networks:
+      - its_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: its_gestionale_redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - its_network
+
+  # Queue Worker per operazioni asincrone
+  queue:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: its_gestionale_queue
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    command: php artisan queue:work --verbose --tries=3 --timeout=90
+    networks:
+      - its_network
+    depends_on:
+      - db
+      - redis
+
+  # Scheduler per cron jobs
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: its_gestionale_scheduler
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    command: >
+      sh -c "while true; do
+        php artisan schedule:run --verbose --no-interaction &
+        sleep 60
+      done"
+    networks:
+      - its_network
+    depends_on:
+      - db
+      - redis
+
+  # MinIO per file storage
+  minio:
+    image: minio/minio
+    container_name: its_gestionale_minio
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    networks:
+      - its_network
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: its_gestionale_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: its_user
+      PMA_PASSWORD: its_password
+    ports:
+      - "8081:80"
+    networks:
+      - its_network
+    depends_on:
+      - db
+
+volumes:
+  db_data:
+  redis_data:
+  minio_data:
+
+networks:
+  its_network:
+    driver: bridge
