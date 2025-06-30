@@ -1,6 +1,5 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
-import daisyui from 'daisyui';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -8,7 +7,9 @@ export default {
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
-        './resources/js/**/*.js', // utile se usi JS con Tailwind
+        './resources/**/*.js',
+        './resources/**/*.vue',
+        './app/Livewire/**/*.php',
     ],
 
     theme: {
@@ -19,13 +20,35 @@ export default {
         },
     },
 
-    plugins: [forms, daisyui],
+    plugins: [
+        forms,
+        require('daisyui')
+    ],
 
-    // Opzioni DaisyUI, personalizzabili
+    // Configurazione DaisyUI
     daisyui: {
-        styled: true,
-        themes: ['light', 'dark'],  // supporto light/dark mode
+        themes: [
+            "light",
+            "dark",
+            {
+                its: {
+                    "primary": "#3b82f6",
+                    "secondary": "#8b5cf6",
+                    "accent": "#06b6d4",
+                    "neutral": "#374151",
+                    "base-100": "#ffffff",
+                    "base-200": "#f9fafb",
+                    "base-300": "#f3f4f6",
+                    "info": "#0ea5e9",
+                    "success": "#22c55e",
+                    "warning": "#f59e0b",
+                    "error": "#ef4444",
+                },
+            },
+        ],
+        darkTheme: "dark",
         base: true,
+        styled: true,
         utils: true,
         logs: true,
         rtl: false,

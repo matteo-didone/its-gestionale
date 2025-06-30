@@ -9,6 +9,8 @@ services:
     volumes:
       - ./:/var/www
       - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    ports:
+      - "5173:5173"  # 🚀 AGGIUNTO: Porta per Vite dev server
     networks:
       - its_network
     depends_on:
