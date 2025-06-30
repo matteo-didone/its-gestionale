@@ -43,7 +43,7 @@ class ITSDataSeeder extends Seeder
             ],
             [
                 'name' => 'Web Developer',
-                'code' => 'WIcs-2', 
+                'code' => 'WIcs-2',
                 'description' => 'Corso biennale per Tecnico Superiore per lo sviluppo di applicazioni web',
                 'total_hours' => 2000,
                 'classroom_hours' => 1200,
@@ -63,7 +63,7 @@ class ITSDataSeeder extends Seeder
             // Competenze di Base
             ['macro_area' => 'competenze-base', 'name' => 'Competenze linguistiche, relazionali e organizzative', 'year' => 1],
             ['macro_area' => 'competenze-base', 'name' => 'Competenze linguistiche, relazionali e organizzative', 'year' => 2],
-            
+
             // IT Fundamentals
             ['macro_area' => 'it-fundamentals', 'name' => 'Sistemi Operativi Windows', 'year' => 1],
             ['macro_area' => 'it-fundamentals', 'name' => 'Sistemi Operativi Linux', 'year' => 1],
@@ -123,7 +123,7 @@ class ITSDataSeeder extends Seeder
 
         foreach ($subjects as $subject) {
             $macroAreaId = DB::table('macro_areas')->where('slug', $subject['macro_area'])->first()->id;
-            
+
             DB::table('subjects')->insert([
                 'macro_area_id' => $macroAreaId,
                 'name' => $subject['name'],

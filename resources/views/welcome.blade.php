@@ -1,81 +1,54 @@
 <!DOCTYPE html>
-<html lang="it" data-theme="itsTheme">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ITS Gestionale</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ITS Gestionale - Home</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="min-h-screen bg-gradient-to-br from-primary to-secondary">
-    <div class="container mx-auto px-4 py-16">
-        <div class="text-center text-white">
-            <h1 class="text-6xl font-bold mb-6">🎓 ITS Gestionale</h1>
-            <p class="text-xl mb-8 max-w-2xl mx-auto">
-                Sistema di gestione completo per la Fondazione ITS Alto Adriatico
-            </p>
+<body class="bg-base-200 text-base-content min-h-screen flex flex-col font-sans">
 
-            <!-- TEST DAISYUI: Questi bottoni devono avere lo stile DaisyUI -->
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                <button class="btn btn-primary btn-lg">
-                    🔐 Accedi al Sistema
-                </button>
-                <button class="btn btn-outline btn-secondary btn-lg">
-                    📚 Documentazione
-                </button>
-            </div>
-
-            <!-- TEST DAISYUI: Cards con stile DaisyUI -->
-            <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                <div class="card bg-base-100/20 backdrop-blur shadow-xl">
-                    <div class="card-body text-center">
-                        <h2 class="card-title text-white justify-center">
-                            📊 Gestione Voti
-                        </h2>
-                        <p class="text-white/90">Sistema completo per voti e valutazioni</p>
-                        <div class="card-actions justify-end">
-                            <button class="btn btn-accent btn-sm">Vai</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card bg-base-100/20 backdrop-blur shadow-xl">
-                    <div class="card-body text-center">
-                        <h2 class="card-title text-white justify-center">
-                            ⏰ Presenze & Orari
-                        </h2>
-                        <p class="text-white/90">Monitoraggio presenze e orari lezioni</p>
-                        <div class="card-actions justify-end">
-                            <button class="btn btn-accent btn-sm">Vai</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card bg-base-100/20 backdrop-blur shadow-xl">
-                    <div class="card-body text-center">
-                        <h2 class="card-title text-white justify-center">
-                            💻 Gestione Materiali
-                        </h2>
-                        <p class="text-white/90">PC, Raspberry Pi e materiali didattici</p>
-                        <div class="card-actions justify-end">
-                            <button class="btn btn-accent btn-sm">Vai</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TEST DAISYUI: Alert -->
-            <div class="alert alert-info mt-8 max-w-2xl mx-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    class="stroke-current shrink-0 w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span>Se vedi questo alert stilizzato, DaisyUI funziona!</span>
-            </div>
+    <header class="navbar bg-base-100 shadow-md">
+        <div class="container mx-auto flex justify-between items-center px-6 py-3">
+            <a href="#" class="btn btn-ghost normal-case text-3xl font-extrabold text-primary">
+                ITS Gestionale
+            </a>
+            <nav class="flex gap-4 text-sm font-medium">
+                @if (Route::has('login'))
+                @auth
+                <a href="{{ url('/dashboard') }}" class="btn btn-primary btn-sm normal-case">Dashboard</a>
+                @else
+                <a href="{{ route('login') }}" class="btn btn-outline btn-sm normal-case">Login</a>
+                @if (Route::has('register'))
+                <a href="{{ route('register') }}" class="btn btn-outline btn-sm normal-case">Register</a>
+                @endif
+                @endauth
+                @endif
+            </nav>
         </div>
-    </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center px-6 text-center max-w-4xl mx-auto space-y-8">
+        <h1 class="text-5xl font-extrabold text-primary tracking-tight leading-tight sm:text-6xl md:text-7xl">
+            Benvenuto nel gestionale <span class="text-secondary">ITS</span>
+        </h1>
+        <p class="text-lg text-base-content/80 max-w-xl mx-auto leading-relaxed">
+            Gestisci studenti, docenti, corsi e molto altro con un'interfaccia semplice, moderna e potente.
+        </p>
+        <a href="{{ url('/dashboard') }}"
+            class="btn btn-primary btn-lg shadow-lg hover:scale-105 transform transition duration-300 ease-in-out">
+            Vai alla Dashboard
+        </a>
+    </main>
+
+    <footer class="footer footer-center p-6 bg-base-100 text-base-content border-t border-base-content/20 mt-16">
+        <div class="max-w-4xl mx-auto text-sm text-base-content/60">
+            <p>© {{ date('Y') }} ITS Gestionale. Powered by Laravel {{ Illuminate\Foundation\Application::VERSION }}</p>
+        </div>
+    </footer>
+
 </body>
 
 </html>
